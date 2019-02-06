@@ -41,11 +41,11 @@ class WikiPathways:
         PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
         """
 
-    def get_wikipathway_id(self, wikipathway_id) -> Pathway:
+    def get_wiki_pathway_id(self, wiki_pathway_id) -> Pathway:
         """
 
-        :type wikipathway_id: str
-        :param wikipathway_id: 
+        :type wiki_pathway_id: str
+        :param wiki_pathway_id:
         """
         query = """
         SELECT DISTINCT ?label ?wikidata WHERE {
@@ -53,11 +53,43 @@ class WikiPathways:
           ?metabolite rdfs:label ?label .
           ?metabolite dcterms:isPartOf ?pathway .
           ?pathway a wp:Pathway .
-          ?pathway dcterms:identifier """ + '"' + wikipathway_id + '"' + """^^xsd:string .
+          ?pathway dcterms:identifier """ + '"' + wiki_pathway_id + '"' + """^^xsd:string .
           ?metabolite wp:bdbWikidata ?wikidata .
         }"""
 
-        return _execute_sparql_query_(query)
+        result = self._execute_sparql_query_(query)
+
+
+
+        # TODO: add error handling
+        # print(result)
+        if not result["results"]["bindings"]:
+            print("geen gegevans ontvagen van wiki pathw") #  TODO: maak er beter foutmelding van en in het engels mischin zelfs een error.
+            exit()
+        # for iet in result:
+        #     print(iet)
+        # # exit()
+        # print(result["results"])
+        # # print(result["head"])
+        # for iets in result["results"]:
+        #     print(iets)
+        # for iets in result["results"]["bindings"]:
+        #     print(iets)
+        #     print(iets["wikidata"]["value"])
+        #     print(iets["wikidata"]["value"][31:])
+        # for iets in result["results"]["bindings"]:
+        #     print(iets)
+        #     print(iets["label"]["value"])
+        # exit()
+        tmp_wiki_data_ids = [iter_result["wikidata"]["value"][31:] for iter_result in result["results"]["bindings"]]
+        # print(tmp_wiki_data_ids)
+
+        # print(tmp_wiki_data_ids)
+        # print(result["results"]["bindings"])
+        # print(result["results"]["bindings"]["wikidata"])
+        # for iets in result["results"]["bindings"]["wikidata"]:
+        #     print(iets)
+        return Pathway(wiki_pathway_id, [[iter_result["wikidata"]["value"][31:], iter_result["label"]["value"]] for iter_result in result["results"]["bindings"]])
 
     def _execute_sparql_query_(self, query):
         """
@@ -66,9 +98,9 @@ class WikiPathways:
         """
 
         self._sparql_endpoint_.setQuery(query)
+        # TODO: add error handling and 200 stater chek
         self._sparql_endpoint_.setReturnFormat(JSON)
-        results = self._sparql_endpoint_.query().convert()
-        print(results)
+        return self._sparql_endpoint_.query().convert()
 
 def main():
     """
@@ -77,7 +109,11 @@ def main():
     """
     print(__doc__)
     print("dit bestant was niet bedoelt om als enekl bestant uit gevoert te worden\n het zal dan ook nu stoppen ") # TODO: make enilis
+    run = WikiPathways()
+    print(run.get_wiki_pathway_id("WP1604"))
 
+    print("\ntestonzin\n")
+    run.get_wiki_pathway_id("onzin")
 
 if __name__ == '__main__':
     sys.exit(main())
