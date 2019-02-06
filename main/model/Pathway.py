@@ -5,5 +5,4 @@ class Pathway(object):
 
         :param pathway_components:
         """
-
-        # wiki_data_ids: str, trivial_name_wiki_pathway: str
+        pass

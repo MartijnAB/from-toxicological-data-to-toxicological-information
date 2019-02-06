@@ -3,13 +3,10 @@ TODO: add Docstring for fill
 test doc
 """
 
-from SPARQLWrapper import SPARQLWrapper, JSON #  TODO: add comment
-import sys
+from SPARQLWrapper import SPARQLWrapper, JSON  # TODO: add comment
+import sys  # TODO: add comment
 
-from main.model.Pathway import Pathway
-
-
-
+from main.model.Pathway import Pathway  # TODO: add comment
 
 
 class WikiPathways:
@@ -59,37 +56,14 @@ class WikiPathways:
 
         result = self._execute_sparql_query_(query)
 
-
-
         # TODO: add error handling
-        # print(result)
         if not result["results"]["bindings"]:
-            print("geen gegevans ontvagen van wiki pathw") #  TODO: maak er beter foutmelding van en in het engels mischin zelfs een error.
+            print(
+                "geen gegevans ontvagen van wiki pathw")  # TODO: maak er beter foutmelding van en in het engels mischin zelfs een error.
             exit()
-        # for iet in result:
-        #     print(iet)
-        # # exit()
-        # print(result["results"])
-        # # print(result["head"])
-        # for iets in result["results"]:
-        #     print(iets)
-        # for iets in result["results"]["bindings"]:
-        #     print(iets)
-        #     print(iets["wikidata"]["value"])
-        #     print(iets["wikidata"]["value"][31:])
-        # for iets in result["results"]["bindings"]:
-        #     print(iets)
-        #     print(iets["label"]["value"])
-        # exit()
-        tmp_wiki_data_ids = [iter_result["wikidata"]["value"][31:] for iter_result in result["results"]["bindings"]]
-        # print(tmp_wiki_data_ids)
-
-        # print(tmp_wiki_data_ids)
-        # print(result["results"]["bindings"])
-        # print(result["results"]["bindings"]["wikidata"])
-        # for iets in result["results"]["bindings"]["wikidata"]:
-        #     print(iets)
-        return Pathway(wiki_pathway_id, [[iter_result["wikidata"]["value"][31:], iter_result["label"]["value"]] for iter_result in result["results"]["bindings"]])
+        return Pathway(wiki_pathway_id,
+                       [[iter_result["wikidata"]["value"][31:], iter_result["label"]["value"]] for iter_result in
+                        result["results"]["bindings"]])
 
     def _execute_sparql_query_(self, query):
         """
@@ -102,18 +76,21 @@ class WikiPathways:
         self._sparql_endpoint_.setReturnFormat(JSON)
         return self._sparql_endpoint_.query().convert()
 
+
 def main():
     """
     TODO:
     :return: none
     """
     print(__doc__)
-    print("dit bestant was niet bedoelt om als enekl bestant uit gevoert te worden\n het zal dan ook nu stoppen ") # TODO: make enilis
+    print(
+        "dit bestant was niet bedoelt om als enekl bestant uit gevoert te worden\n het zal dan ook nu stoppen ")  # TODO: make enilis
     run = WikiPathways()
     print(run.get_wiki_pathway_id("WP1604"))
 
     print("\ntestonzin\n")
     run.get_wiki_pathway_id("onzin")
+
 
 if __name__ == '__main__':
     sys.exit(main())
