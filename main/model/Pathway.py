@@ -1,0 +1,2 @@
+class Pathway(object):
+    pass
